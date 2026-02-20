@@ -1,0 +1,14 @@
+
+
+spring:
+  application:
+    name: Azerbook
+  datasource:
+    url: jdbc:postgresql://localhost:5432/book
+    username: vusal
+    password: azerbook55
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8080

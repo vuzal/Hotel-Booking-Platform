@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: azerBook
+    environment:
+      POSTGRES_USER: vusal
+      POSTGRES_PASSWORD: azerbook55
+      POSTGRES_DB: book
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./azerbook_data:/var/lib/postgresql/data
+      - ./setup_booking.sql:/docker-entrypoint-initdb.d/setup_booking.sql
+    restart: unless-stopped
