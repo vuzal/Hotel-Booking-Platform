@@ -73,7 +73,7 @@ public class Reservation {
     LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "reservation")
-    List<Payments> payments;
+    List<Payment> payments;
 
 
 }
