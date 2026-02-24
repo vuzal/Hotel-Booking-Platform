@@ -1,4 +1,4 @@
-package com.vusal.azerbook.dto;
+package com.vusal.azerbook.dto.request;
 
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;

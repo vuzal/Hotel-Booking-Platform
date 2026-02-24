@@ -1,4 +1,4 @@
-package com.vusal.azerbook.dto;
+package com.vusal.azerbook.dto.request;
 
 import com.vusal.azerbook.enums.PaymentMethod;
 import jakarta.validation.constraints.DecimalMin;
