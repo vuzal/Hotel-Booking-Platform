@@ -21,6 +21,7 @@ public class ReservationResponse {
     ReservationStatus status;
     Integer guestCount;
     LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 
 
 }

@@ -1,6 +1,7 @@
 package com.vusal.azerbook.dto.response;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class UserResponse {
 
     Long id;
@@ -17,5 +19,6 @@ public class UserResponse {
     String phone;
     String role;
     LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 
 }

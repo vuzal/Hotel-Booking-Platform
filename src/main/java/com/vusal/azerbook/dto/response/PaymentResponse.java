@@ -18,5 +18,6 @@ public class PaymentResponse {
     PaymentMethod method;
     PaymentStatus status;
     LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }
 

@@ -1,16 +1,16 @@
 package com.vusal.azerbook.dto.response;
 
-import com.vusal.azerbook.entity.Image;
-import com.vusal.azerbook.entity.Review;
-import com.vusal.azerbook.entity.Room;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class HotelDetailResponse {
 
     Long id;
@@ -19,7 +19,9 @@ public class HotelDetailResponse {
     String  city;
     String address;
     Double rating;
-    List<Room> rooms;
-    List<Review> reviews;
-    List<Image> images;
+    List<RoomResponse> rooms;
+    List<ReviewResponse> reviews;
+    List<ImageResponse> images;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }
