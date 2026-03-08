@@ -16,6 +16,7 @@ public class RoomResponse {
     Long id;
     String name;
     BigDecimal price;
+    String type;
     Integer capacity;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

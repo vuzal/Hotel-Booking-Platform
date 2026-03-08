@@ -3,6 +3,7 @@ package com.vusal.azerbook.dto.response;
 import com.vusal.azerbook.enums.PaymentMethod;
 import com.vusal.azerbook.enums.PaymentStatus;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class PaymentResponse {
 
     Long id;
