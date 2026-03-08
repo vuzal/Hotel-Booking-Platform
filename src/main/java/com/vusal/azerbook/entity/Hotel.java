@@ -1,11 +1,10 @@
 package com.vusal.azerbook.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,8 +13,11 @@ import java.util.List;
 @Entity
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SoftDelete(columnName = "is_active")
+@SQLRestriction("is_active=true")
 @Table(name = "hotels")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Hotel {
 
     @Id

@@ -2,21 +2,24 @@ package com.vusal.azerbook.entity;
 
 import com.vusal.azerbook.enums.ReservationStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SoftDelete(columnName = "is_active")
+@SQLRestriction("is_active=true")
 @Table(name = "reservations")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Reservation {
 
     @Id
@@ -36,10 +39,10 @@ public class Reservation {
     Hotel hotel;
 
     @Column(name = "check-in", nullable = false)
-    LocalDateTime checkIn;
+    LocalDate checkIn;
 
     @Column(name = "check_out", nullable = false)
-    LocalDateTime checkOut;
+    LocalDate checkOut;
 
     @Column(name = "total_price", nullable = false)
     BigDecimal totalPrice;
@@ -51,8 +54,8 @@ public class Reservation {
     @Column(name = "guest_count", nullable = false)
     Integer guestCount;
 
-    @Column(name = "is_active",nullable = false)
-    Boolean isActive=true;
+    @Column(name = "is_active", nullable = false)
+    Boolean isActive = true;
 
     @UpdateTimestamp
     @Column(name = "updated_at")

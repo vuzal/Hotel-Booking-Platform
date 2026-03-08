@@ -3,11 +3,10 @@ package com.vusal.azerbook.entity;
 import com.vusal.azerbook.enums.PaymentMethod;
 import com.vusal.azerbook.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
@@ -16,7 +15,10 @@ import java.time.LocalDateTime;
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-@SoftDelete(columnName = "is_active")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@SQLRestriction("is_active=true")
 @Table(name = "payments")
 public class Payment {
 

@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -19,11 +19,11 @@ public class ReservationCreateRequest {
 
     @NotNull(message = "Check-in date is required")
     @FutureOrPresent(message = "Check-in date cannot be in the past")
-    LocalDateTime checkIn;
+    LocalDate checkIn;
 
     @NotNull(message = "Check-out date is required")
     @Future(message = "Check-out date must be in the future")
-    LocalDateTime checkOut;
+    LocalDate checkOut;
 
     @NotNull(message = "Guest count is required")
     @Min(value = 1, message = "Guest count must be at least 1")

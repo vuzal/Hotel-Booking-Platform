@@ -1,11 +1,10 @@
 package com.vusal.azerbook.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -13,8 +12,11 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SoftDelete(columnName = "is_active")
+@SQLRestriction("is_active=true")
 @Table(name = "images")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
 
     @Id
@@ -31,7 +33,7 @@ public class Image {
     @Column(name = "is_main", nullable = false)
     Boolean isMain;
 
-    @Column(name = "is_active",nullable = false)
+    @Column(name = "is_active", nullable = false)
     Boolean isActive;
 
     @UpdateTimestamp
