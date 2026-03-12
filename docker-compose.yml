@@ -11,6 +11,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./azerbook_data:/var/lib/postgresql/data
+      - azerbook_db_volume:/var/lib/postgresql/data
       - ./setup_booking.sql:/docker-entrypoint-initdb.d/setup_booking.sql
     restart: unless-stopped
+
+volumes:
+  azerbook_db_volume:
