@@ -1,7 +1,7 @@
 package com.vusal.azerbook.security;
 
 
-import com.vusal.azerbook.entity.User;
+import com.vusal.azerbook.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;

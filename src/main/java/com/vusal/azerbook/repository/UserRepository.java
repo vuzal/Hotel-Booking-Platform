@@ -1,6 +1,6 @@
 package com.vusal.azerbook.repository;
 
-import com.vusal.azerbook.entity.User;
+import com.vusal.azerbook.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

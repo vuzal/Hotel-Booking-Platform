@@ -1,7 +1,7 @@
 package com.vusal.azerbook.mapper;
 
-import com.vusal.azerbook.dto.response.*;
-import com.vusal.azerbook.entity.*;
+import com.vusal.azerbook.model.entity.*;
+import com.vusal.azerbook.model.response.*;
 
 public interface EntityMapper {
 

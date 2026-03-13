@@ -1,7 +1,7 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.request.ReservationCreateRequest;
-import com.vusal.azerbook.dto.response.ReservationResponse;
+import com.vusal.azerbook.model.request.ReservationCreateRequest;
+import com.vusal.azerbook.model.response.ReservationResponse;
 
 import java.time.LocalDate;
 import java.util.List;

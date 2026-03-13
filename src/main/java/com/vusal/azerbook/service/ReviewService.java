@@ -1,7 +1,7 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.request.ReviewCreateRequest;
-import com.vusal.azerbook.dto.response.ReviewResponse;
+import com.vusal.azerbook.model.request.ReviewCreateRequest;
+import com.vusal.azerbook.model.response.ReviewResponse;
 
 import java.util.List;
 

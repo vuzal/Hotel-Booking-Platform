@@ -1,8 +1,8 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.request.HotelCreateRequest;
-import com.vusal.azerbook.dto.response.HotelDetailResponse;
-import com.vusal.azerbook.dto.response.HotelResponse;
+import com.vusal.azerbook.model.request.HotelCreateRequest;
+import com.vusal.azerbook.model.response.HotelDetailResponse;
+import com.vusal.azerbook.model.response.HotelResponse;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.request.PaymentCreateRequest;
-import com.vusal.azerbook.dto.response.PaymentResponse;
+import com.vusal.azerbook.model.request.PaymentCreateRequest;
+import com.vusal.azerbook.model.response.PaymentResponse;
 import com.vusal.azerbook.enums.PaymentMethod;
 
 import java.util.List;

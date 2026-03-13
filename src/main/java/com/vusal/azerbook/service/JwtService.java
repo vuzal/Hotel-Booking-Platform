@@ -1,6 +1,6 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.response.TokenResponse;
+import com.vusal.azerbook.model.response.TokenResponse;
 
 public interface JwtService {
 

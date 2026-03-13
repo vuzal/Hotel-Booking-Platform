@@ -1,6 +1,6 @@
 package com.vusal.azerbook.repository;
 
-import com.vusal.azerbook.entity.Payment;
+import com.vusal.azerbook.model.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

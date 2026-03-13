@@ -1,6 +1,6 @@
 package com.vusal.azerbook.repository;
 
-import com.vusal.azerbook.entity.Image;
+import com.vusal.azerbook.model.entity.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

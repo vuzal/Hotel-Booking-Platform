@@ -1,6 +1,6 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.response.ImageResponse;
+import com.vusal.azerbook.model.response.ImageResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

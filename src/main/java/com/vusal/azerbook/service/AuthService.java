@@ -1,8 +1,8 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.request.UserLoginRequest;
-import com.vusal.azerbook.dto.request.UserRegisterRequest;
-import com.vusal.azerbook.dto.response.AuthResponse;
+import com.vusal.azerbook.model.request.UserLoginRequest;
+import com.vusal.azerbook.model.request.UserRegisterRequest;
+import com.vusal.azerbook.model.response.AuthResponse;
 
 public interface AuthService {
 

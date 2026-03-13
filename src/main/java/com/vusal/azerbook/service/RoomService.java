@@ -1,7 +1,7 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.request.RoomCreateRequest;
-import com.vusal.azerbook.dto.response.RoomResponse;
+import com.vusal.azerbook.model.request.RoomCreateRequest;
+import com.vusal.azerbook.model.response.RoomResponse;
 
 import java.util.List;
 

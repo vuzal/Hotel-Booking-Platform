@@ -1,6 +1,6 @@
 package com.vusal.azerbook.service;
 
-import com.vusal.azerbook.dto.response.UserResponse;
+import com.vusal.azerbook.model.response.UserResponse;
 
 public interface UserService {
 

@@ -1,6 +1,6 @@
 package com.vusal.azerbook.repository;
 
-import com.vusal.azerbook.entity.Review;
+import com.vusal.azerbook.model.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

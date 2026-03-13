@@ -1,7 +1,7 @@
 package com.vusal.azerbook.security;
 
 import com.vusal.azerbook.service.JwtService;
-import com.vusal.azerbook.service.UserDetailsServiceImpl;
+import com.vusal.azerbook.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
