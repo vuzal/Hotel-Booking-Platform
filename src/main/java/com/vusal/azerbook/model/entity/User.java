@@ -41,6 +41,7 @@ public class User {
     String role;
 
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     Boolean isActive = true;
 
     @UpdateTimestamp

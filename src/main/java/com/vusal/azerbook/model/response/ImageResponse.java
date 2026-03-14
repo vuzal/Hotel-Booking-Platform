@@ -14,6 +14,7 @@ public class ImageResponse {
 
     Long id;
     String url;
+    String publicId;
     Boolean isMain;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

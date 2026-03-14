@@ -10,13 +10,15 @@ public interface ReservationService {
 
     ReservationResponse create(ReservationCreateRequest request, Long userId);
 
+    List<ReservationResponse> getAll();
+
     List<ReservationResponse> getByUserId(Long userId);
 
     ReservationResponse getById(Long id);
 
-    void cancel(Long id);
+    ReservationResponse cancel(Long id,Long currentUserId);
 
-    void complete(Long id);
+    ReservationResponse complete(Long id);
 
     Boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut);
 }

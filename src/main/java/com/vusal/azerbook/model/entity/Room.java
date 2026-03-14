@@ -41,6 +41,7 @@ public class Room {
     Integer capacity;
 
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     Boolean isActive = true;
 
     @UpdateTimestamp

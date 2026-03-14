@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,8 +40,9 @@ public class Hotel {
     @Column(nullable = false)
     Double rating;
 
-    @Column(name = "is_active",nullable = false)
-    Boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    @Builder.Default
+    Boolean isActive = true;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
@@ -51,12 +53,15 @@ public class Hotel {
     LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "hotel")
-    List<Room> rooms;
+    @Builder.Default
+    List<Room> rooms = new ArrayList<>();
 
     @OneToMany(mappedBy = "hotel")
-    List<Review> reviews;
+    @Builder.Default
+    List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "hotel")
-    List<Image> images;
+    @Builder.Default
+    List<Image> images = new ArrayList<>();
 
 }

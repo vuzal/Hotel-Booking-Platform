@@ -34,12 +34,21 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponse create(ReservationCreateRequest request, Long userId) {
+
+        if (!request.getCheckOut().isAfter(request.getCheckIn())) {
+            throw new RuntimeException("Check-out date must be after check-in date");
+        }
+
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new RuntimeException("Room not found"));
         Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new RuntimeException("Hotel not found"));
 
         if (!isRoomAvailable(request.getRoomId(), request.getCheckIn(), request.getCheckOut())) {
             throw new RuntimeException("Room is not available for selected dates");
+        }
+
+        if (request.getGuestCount() > room.getCapacity()) {
+            throw new RuntimeException("Guest count exceeds room capacity of " + room.getCapacity());
         }
 
         long nights = ChronoUnit.DAYS.between(request.getCheckIn(), request.getCheckOut());
@@ -59,6 +68,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public List<ReservationResponse> getAll() {
+        return reservationRepository.findAll()
+                .stream().map(mapper::toReservationResponse).toList();
+    }
+
+
+    @Override
     public List<ReservationResponse> getByUserId(Long userId) {
         return reservationRepository.findByUserId(userId).stream()
                 .map(mapper::toReservationResponse).toList();
@@ -71,18 +87,28 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void cancel(Long id) {
+    public ReservationResponse cancel(Long id, Long currentUserId) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Reservation not found"));
-        reservation.setStatus(ReservationStatus.CANCELLED);
-        reservationRepository.save(reservation);
 
+        if (!reservation.getUser().getId().equals(currentUserId)) {
+            throw new RuntimeException("You are not authorized to cancel this reservation!");
+        }
+
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            throw new RuntimeException("Reservation is already cancelled");
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        Reservation saved = reservationRepository.save(reservation);
+        return mapper.toReservationResponse(saved);
     }
 
     @Override
-    public void complete(Long id) {
+    public ReservationResponse complete(Long id) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Reservation not found"));
         reservation.setStatus(ReservationStatus.COMPLETED);
-        reservationRepository.save(reservation);
+        Reservation saved = reservationRepository.save(reservation);
+        return mapper.toReservationResponse(saved);
 
     }
 

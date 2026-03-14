@@ -37,7 +37,8 @@ public class Review {
     String comment;
 
     @Column(name = "is_active", nullable = false)
-    Boolean isActive;
+    @Builder.Default
+    Boolean isActive=true;
 
     @UpdateTimestamp
     @Column(name = "updated_at")

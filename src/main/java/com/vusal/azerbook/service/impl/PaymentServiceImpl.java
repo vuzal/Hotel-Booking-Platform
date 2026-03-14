@@ -11,6 +11,7 @@ import com.vusal.azerbook.mapper.EntityMapper;
 import com.vusal.azerbook.repository.PaymentRepository;
 import com.vusal.azerbook.repository.ReservationRepository;
 import com.vusal.azerbook.service.PaymentService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public PaymentResponse processPayment(Long reservationId, PaymentMethod method) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new RuntimeException("Reservation not found"));
 
@@ -60,17 +62,21 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (status == PaymentStatus.PAID) {
             reservation.setStatus(ReservationStatus.CONFIRMED);
-            reservationRepository.save(reservation);
+        } else if (status == PaymentStatus.FAILED) {
+            reservation.setStatus(ReservationStatus.CANCELLED);
         }
-
+        reservationRepository.save(reservation);
         Payment saved = paymentRepository.save(payment);
         return mapper.toPaymentResponse(saved);
     }
 
     @Override
     public List<PaymentResponse> getByReservationId(Long reservationId) {
-        return paymentRepository.findByReservationId(reservationId).stream()
-                .map(mapper::toPaymentResponse).toList();
+        List<Payment>payments=paymentRepository.findByReservationId(reservationId);
+        if (payments.isEmpty()) {
+            throw new RuntimeException("Payment not found");
+        }
+        return payments.stream().map(mapper::toPaymentResponse).toList();
     }
 
     @Override

@@ -9,8 +9,11 @@ import com.vusal.azerbook.mapper.EntityMapper;
 import com.vusal.azerbook.repository.HotelRepository;
 import com.vusal.azerbook.repository.ReviewRepository;
 import com.vusal.azerbook.repository.UserRepository;
+import com.vusal.azerbook.security.UserDetailsImpl;
 import com.vusal.azerbook.service.ReviewService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,8 +70,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void delete(Long id) {
+    @Transactional
+    public void delete(Long id, UserDetailsImpl currentUser) {
         Review review = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found!"));
+
+        boolean isOwner=review.getUser().getId().equals(currentUser.getId());
+        boolean isAdmin = currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (!isAdmin&&!isOwner){
+            throw new RuntimeException("You don't have permission to delete this review!");
+        }
         review.setIsActive(false);
         reviewRepository.save(review);
         updateHotelRating(review.getHotel());

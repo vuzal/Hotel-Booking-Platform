@@ -102,6 +102,7 @@ public class EntityMapperImpl implements EntityMapper {
         return ImageResponse.builder()
                 .id(image.getId())
                 .url(image.getUrl())
+                .publicId(image.getPublicId())
                 .isMain(image.getIsMain())
                 .createdAt(image.getCreatedAt())
                 .updatedAt(image.getUpdatedAt())
@@ -125,6 +126,8 @@ public class EntityMapperImpl implements EntityMapper {
                         .findFirst()
                         .map(Image::getUrl)
                         .orElse(null))
+                .createdAt(hotel.getCreatedAt())
+                .updatedAt(hotel.getUpdatedAt())
                 .build();
     }
 
@@ -168,6 +171,8 @@ public class EntityMapperImpl implements EntityMapper {
                                     .createdAt(review.getCreatedAt())
                                     .build();
                         }).toList())
+                .createdAt(hotel.getCreatedAt())
+                .updatedAt(hotel.getUpdatedAt())
                 .build();
     }
 }

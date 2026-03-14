@@ -20,7 +20,7 @@ public class ReviewCreateRequest {
     @Max(value = 5, message = "Rating cannot exceed 5")
     Double rating;
 
-    @Size(min = 1000, message = "Comment must be less than 100 characters")
+    @Size(max = 1000, message = "Comment must be less than 100 characters")
     String comment;
 
 }

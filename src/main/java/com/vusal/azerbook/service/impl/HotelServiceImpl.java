@@ -8,7 +8,9 @@ import com.vusal.azerbook.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import com.vusal.azerbook.model.response.HotelDetailResponse;
 import com.vusal.azerbook.model.response.HotelResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -48,14 +50,23 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public List<HotelResponse> getByCity(String city) {
-        return hotelRepository.findByCityIgnoreCase(city).stream()
+        List<Hotel>hotels=hotelRepository.findByCityIgnoreCase(city);
+
+        if (hotels.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No hotels found in city: " + city);
+        }
+        return hotels.stream()
                 .map(mapper::toHotelResponse).toList();
     }
 
     @Override
     public List<HotelResponse> searchByName(String name) {
-        return hotelRepository.findByNameIgnoreCase(name).stream()
-                .map(mapper::toHotelResponse).toList();
+        List<Hotel> hotels=hotelRepository.findByNameIgnoreCase(name);
+
+        if (hotels.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No hotels found in name: " + name);
+        }
+        return hotels.stream().map(mapper::toHotelResponse).toList();
     }
 
     @Override

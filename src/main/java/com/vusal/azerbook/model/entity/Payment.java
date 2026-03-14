@@ -42,7 +42,8 @@ public class Payment {
     PaymentStatus status;
 
     @Column(name = "is_active")
-    Boolean isActive;
+    @Builder.Default
+    Boolean isActive=true;
 
     @UpdateTimestamp
     @Column(name = "updated_at")

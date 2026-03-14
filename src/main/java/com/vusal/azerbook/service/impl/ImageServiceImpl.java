@@ -9,6 +9,7 @@ import com.vusal.azerbook.mapper.EntityMapper;
 import com.vusal.azerbook.repository.HotelRepository;
 import com.vusal.azerbook.repository.ImageRepository;
 import com.vusal.azerbook.service.ImageService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,49 +28,8 @@ public class ImageServiceImpl implements ImageService {
     private final EntityMapper mapper;
 
 
-    private String uploadToCloudinary(MultipartFile file) {
-        try {
-            Map<String, Object> uploadResult = cloudinary.uploader().upload(
-                    file.getBytes(),
-                    ObjectUtils.asMap(
-                            "folder", "azerbook/hotels",
-                            "resource_type", "auto"
-                    )
-            );
-            return (String) uploadResult.get("secure_url");
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image to Cloudinary", e);
-        }
-    }
-
-    private String extractPublicId(String imageUrl) {
-        // Extract public ID from Cloudinary URL
-        // Example: https://res.cloudinary.com/xxx/image/upload/v123/azerbook/hotels/abc.jpg
-        // Result: azerbook/hotels/abc
-        String[] parts = imageUrl.split("/upload/");
-        if (parts.length > 1) {
-            String path = parts[1];
-            // Remove version number if exists (v123/)
-            if (path.startsWith("v")) {
-                path = path.substring(path.indexOf("/") + 1);
-            }
-            // Remove extension
-            return path.substring(0, path.lastIndexOf("."));
-        }
-        return null;
-    }
-
-    private void deleteFromCloudinary(String imageUrl) {
-        try {
-            String publicId = extractPublicId(imageUrl);
-            cloudinary.uploader().destroy(publicId,ObjectUtils.emptyMap());
-        }catch (IOException e){
-            throw new RuntimeException("Failed to delete image from Cloudinary",e);
-        }
-    }
-
-
     @Override
+    @Transactional
     public ImageResponse upload(Long hotelId, MultipartFile file, Boolean isMain) {
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new RuntimeException("HotelNotFound"));
 
@@ -81,15 +41,21 @@ public class ImageServiceImpl implements ImageService {
                     });
         }
 
-        String imageUrl = uploadToCloudinary(file);
+        Map<?, ?> uploadResult;
+        try {
+            uploadResult = cloudinary.uploader().upload(file.getBytes(),
+                    ObjectUtils.asMap("folder", "azerbook/hotels"));
+        } catch (IOException e) {
+            throw new RuntimeException("Cloudinary upload failed", e);
+        }
 
         Image image = Image.builder()
                 .hotel(hotel)
-                .url(imageUrl)
-                .isMain(isMain != null ? isMain : false)
+                .url(uploadResult.get("secure_url").toString())
+                .publicId(uploadResult.get("public_id").toString())
+                .isMain(Boolean.TRUE.equals(isMain))
                 .build();
-        Image saved = imageRepository.save(image);
-        return mapper.toImageResponse(saved);
+        return mapper.toImageResponse(imageRepository.save(image));
 
     }
 
@@ -107,11 +73,15 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
-        Image image=imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+        Image image = imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
 
-        deleteFromCloudinary(image.getUrl());
-        image.setIsActive(false);
-        imageRepository.save(image);
+        try {
+            cloudinary.uploader().destroy(image.getPublicId(), ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete from Cloudinary", e);
+        }
+        imageRepository.delete(image);
     }
 }

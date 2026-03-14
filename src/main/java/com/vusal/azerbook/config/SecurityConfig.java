@@ -39,10 +39,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/hotels/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/rooms/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
 
                         .requestMatchers("/api/reservations/**").authenticated()
                         .requestMatchers("/api/payments/**").authenticated()
                         .requestMatchers("/api/users/**").authenticated()
+                        .requestMatchers("/api/reviews/my").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/api/hotels/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/hotels/**").hasRole("ADMIN")
@@ -51,6 +53,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/rooms/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/rooms/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/rooms/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST,"/api/images/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/images/**").hasRole("ADMIN")
+
+                        .requestMatchers("/error").permitAll()
 
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
