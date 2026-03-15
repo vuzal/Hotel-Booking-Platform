@@ -1,5 +1,8 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.AlreadyExistsException;
+import com.vusal.azerbook.exception.InvalidCredentialsException;
+import com.vusal.azerbook.exception.NotFoundException;
 import com.vusal.azerbook.model.request.UserLoginRequest;
 import com.vusal.azerbook.model.request.UserRegisterRequest;
 import com.vusal.azerbook.model.response.AuthResponse;
@@ -26,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse register(UserRegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new AlreadyExistsException("EMAIL ALREADY EXISTS: "+request.getEmail());
         }
 
         User user = User.builder()
@@ -48,10 +51,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(UserLoginRequest request) {
         User user=userRepository.findByEmail(request.getEmail())
-                .orElseThrow(()->new RuntimeException("Invalid Email"));
+                .orElseThrow(()->new NotFoundException("EMAIL NOT FOUND: "+request.getEmail()));
 
         if (!passwordEncoder.matches(request.getPassword(),user.getPassword())) {
-            throw new RuntimeException("Invalid Password");
+            throw new InvalidCredentialsException("WRONG PASSWORD");
         }
 
         AuthResponse authResponse = new AuthResponse();

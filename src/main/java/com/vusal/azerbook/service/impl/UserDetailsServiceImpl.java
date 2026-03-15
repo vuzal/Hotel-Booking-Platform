@@ -1,5 +1,6 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.NotFoundException;
 import com.vusal.azerbook.model.entity.User;
 import com.vusal.azerbook.repository.UserRepository;
 import com.vusal.azerbook.security.UserDetailsImpl;
@@ -14,9 +15,10 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user=userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User not found with email "+email));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("USER NOT FOUND. email: " + email));
 
         return new UserDetailsImpl(user);
     }

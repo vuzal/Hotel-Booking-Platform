@@ -1,5 +1,6 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.NotFoundException;
 import com.vusal.azerbook.model.request.RoomCreateRequest;
 import com.vusal.azerbook.model.response.RoomResponse;
 import com.vusal.azerbook.model.entity.Hotel;
@@ -23,7 +24,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomResponse create(RoomCreateRequest request) {
-        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new IllegalArgumentException("Hotel id not found"));
+        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. hotelId: " + request.getHotelId()));
         Room room = Room.builder()
                 .hotel(hotel)
                 .name(request.getName())
@@ -37,7 +38,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomResponse getById(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Room id not found"));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundException("ROOM NOT FOUND. id: " + id));
         return mapper.toRoomResponse(room);
     }
 
@@ -49,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomResponse update(Long id, RoomCreateRequest request) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Room id not found"));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundException("ROOM NOT FOUND. id: " + id));
         room.setName(request.getName());
         room.setType(request.getType());
         room.setPrice(request.getPrice());
@@ -61,7 +62,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void delete(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Room id not found"));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundException("ROOM NOT FOUND. id: " + id));
         room.setIsActive(false);
         roomRepository.save(room);
     }

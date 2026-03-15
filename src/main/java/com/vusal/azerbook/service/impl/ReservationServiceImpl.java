@@ -1,5 +1,6 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.*;
 import com.vusal.azerbook.model.request.ReservationCreateRequest;
 import com.vusal.azerbook.model.response.ReservationResponse;
 import com.vusal.azerbook.model.entity.Hotel;
@@ -36,19 +37,19 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationResponse create(ReservationCreateRequest request, Long userId) {
 
         if (!request.getCheckOut().isAfter(request.getCheckIn())) {
-            throw new RuntimeException("Check-out date must be after check-in date");
+            throw new BadRequestException("THE CHECK-OUT DATE MUST BE AFTER THE CHECK-IN DATE!");
         }
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new RuntimeException("Room not found"));
-        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new RuntimeException("Hotel not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("USER NOT FOUND. userId: " + userId));
+        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new RuntimeException("ROOM NOT FOUND. roomId: " + request.getRoomId()));
+        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new RuntimeException("HOTEL NOT FOUND. hotelId: " + request.getHotelId()));
 
         if (!isRoomAvailable(request.getRoomId(), request.getCheckIn(), request.getCheckOut())) {
-            throw new RuntimeException("Room is not available for selected dates");
+            throw new RoomNotAvailableException("ROOM IS NOT AVAILABLE FOR SELECTED DATE!");
         }
 
         if (request.getGuestCount() > room.getCapacity()) {
-            throw new RuntimeException("Guest count exceeds room capacity of " + room.getCapacity());
+            throw new BadRequestException("THE NUMBER OF GUEST COUNT EXCEEDS THE ROOM CAPACITY. MAXIMUM CAPACITY: " + room.getCapacity());
         }
 
         long nights = ChronoUnit.DAYS.between(request.getCheckIn(), request.getCheckOut());
@@ -82,20 +83,20 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponse getById(Long id) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Reservation not found"));
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException("RESERVATION NOT FOUND. id: " + id));
         return mapper.toReservationResponse(reservation);
     }
 
     @Override
     public ReservationResponse cancel(Long id, Long currentUserId) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Reservation not found"));
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException("RESERVATION NOT FOUND. id: " + id));
 
         if (!reservation.getUser().getId().equals(currentUserId)) {
-            throw new RuntimeException("You are not authorized to cancel this reservation!");
+            throw new ForbiddenException("YOU ARE NOT AUTHORIZED TO CANCEL THIS RESERVATION!");
         }
 
         if (reservation.getStatus() == ReservationStatus.CANCELLED) {
-            throw new RuntimeException("Reservation is already cancelled");
+            throw new AlreadyExistsException("RESERVATION ALREADY CANCELLED!");
         }
 
         reservation.setStatus(ReservationStatus.CANCELLED);
@@ -105,7 +106,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponse complete(Long id) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Reservation not found"));
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new NotFoundException("RESERVATION NOT FOUND. id: " + id));
         reservation.setStatus(ReservationStatus.COMPLETED);
         Reservation saved = reservationRepository.save(reservation);
         return mapper.toReservationResponse(saved);

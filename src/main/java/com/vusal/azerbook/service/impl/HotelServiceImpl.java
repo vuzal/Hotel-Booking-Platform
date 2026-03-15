@@ -1,5 +1,6 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.NotFoundException;
 import com.vusal.azerbook.model.request.HotelCreateRequest;
 import com.vusal.azerbook.model.entity.Hotel;
 import com.vusal.azerbook.mapper.EntityMapper;
@@ -8,9 +9,7 @@ import com.vusal.azerbook.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import com.vusal.azerbook.model.response.HotelDetailResponse;
 import com.vusal.azerbook.model.response.HotelResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -44,16 +43,16 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public HotelDetailResponse getById(Long id) {
-        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new RuntimeException("Hotel Not Found"));
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. ID: " + id));
         return mapper.toHotelDetailResponse(hotel);
     }
 
     @Override
     public List<HotelResponse> getByCity(String city) {
-        List<Hotel>hotels=hotelRepository.findByCityIgnoreCase(city);
+        List<Hotel> hotels = hotelRepository.findByCityIgnoreCase(city);
 
-        if (hotels.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No hotels found in city: " + city);
+        if (hotels.isEmpty()) {
+            throw new NotFoundException("HOTEL NOT FOUND. CITY: " + city);
         }
         return hotels.stream()
                 .map(mapper::toHotelResponse).toList();
@@ -61,17 +60,17 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public List<HotelResponse> searchByName(String name) {
-        List<Hotel> hotels=hotelRepository.findByNameIgnoreCase(name);
+        List<Hotel> hotels = hotelRepository.findByNameIgnoreCase(name);
 
-        if (hotels.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No hotels found in name: " + name);
+        if (hotels.isEmpty()) {
+            throw new NotFoundException("HOTEL NOT FOUND. NAME: " + name);
         }
         return hotels.stream().map(mapper::toHotelResponse).toList();
     }
 
     @Override
     public HotelResponse update(Long id, HotelCreateRequest request) {
-        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new RuntimeException("Hotel Not Found"));
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. ID: " + id));
         hotel.setName(request.getName());
         hotel.setDescription(request.getDescription());
         hotel.setCity(request.getCity());
@@ -83,7 +82,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public void delete(Long id) {
-        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new RuntimeException("Hotel Not Found"));
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. ID: " + id));
         hotel.setIsActive(false);
         hotelRepository.save(hotel);
 

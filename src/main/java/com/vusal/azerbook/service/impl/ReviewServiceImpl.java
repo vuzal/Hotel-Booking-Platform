@@ -1,5 +1,7 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.ForbiddenException;
+import com.vusal.azerbook.exception.NotFoundException;
 import com.vusal.azerbook.model.request.ReviewCreateRequest;
 import com.vusal.azerbook.model.response.ReviewResponse;
 import com.vusal.azerbook.model.entity.Hotel;
@@ -40,8 +42,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResponse create(ReviewCreateRequest request, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
-        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new RuntimeException("Hotel not found!"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("USER NOT FOUND. userId: "+userId));
+        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. id: "+request.getHotelId()));
 
         Review review = Review.builder()
                 .user(user)
@@ -72,12 +74,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void delete(Long id, UserDetailsImpl currentUser) {
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found!"));
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("REVIEW NOT FOUND. id: "+id));
 
         boolean isOwner=review.getUser().getId().equals(currentUser.getId());
         boolean isAdmin = currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         if (!isAdmin&&!isOwner){
-            throw new RuntimeException("You don't have permission to delete this review!");
+            throw new ForbiddenException(" YOU DON'T HAVE PERMISSION TO DELETE THIS REVIEW!");
         }
         review.setIsActive(false);
         reviewRepository.save(review);

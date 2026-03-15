@@ -1,5 +1,6 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.InvalidTokenException;
 import com.vusal.azerbook.model.response.TokenResponse;
 import com.vusal.azerbook.service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -129,7 +130,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public TokenResponse refreshAccessToken(String refreshToken) {
         if (!validateRefreshToken(refreshToken)) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new InvalidTokenException("REFRESH TOKEN IS INVALID OR EXPIRED");
         }
         String email = extractEmailFromRefreshToken(refreshToken);
         return generateTokens(email);

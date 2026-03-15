@@ -1,5 +1,7 @@
 package com.vusal.azerbook.service.impl;
 
+import com.vusal.azerbook.exception.AlreadyExistsException;
+import com.vusal.azerbook.exception.NotFoundException;
 import com.vusal.azerbook.model.request.PaymentCreateRequest;
 import com.vusal.azerbook.model.response.PaymentResponse;
 import com.vusal.azerbook.model.entity.Payment;
@@ -31,7 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponse create(PaymentCreateRequest request) {
-        Reservation reservation = reservationRepository.findById(request.getReservationId()).orElseThrow(() -> new RuntimeException("Reservation not found"));
+        Reservation reservation = reservationRepository.findById(request.getReservationId()).orElseThrow(() -> new NotFoundException("RESERVATION NOT FOUND. reservationId: " + request.getReservationId()));
         Payment payment = Payment.builder()
                 .reservation(reservation)
                 .amount(request.getAmount())
@@ -46,11 +48,11 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public PaymentResponse processPayment(Long reservationId, PaymentMethod method) {
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new RuntimeException("Reservation not found"));
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new NotFoundException("RESERVATION NOT FOUND. reservationId: " + reservationId));
 
         List<Payment> existingPayments = paymentRepository.findByReservationId(reservationId);
         if (!existingPayments.isEmpty()) {
-            throw new RuntimeException("Payment already exists");
+            throw new AlreadyExistsException("PAYMENT ALREADY EXISTS: reservationId: " + reservationId);
         }
         Payment payment = Payment.builder()
                 .reservation(reservation)
@@ -72,16 +74,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PaymentResponse> getByReservationId(Long reservationId) {
-        List<Payment>payments=paymentRepository.findByReservationId(reservationId);
+        List<Payment> payments = paymentRepository.findByReservationId(reservationId);
         if (payments.isEmpty()) {
-            throw new RuntimeException("Payment not found");
+            throw new NotFoundException("PAYMENT NOT FOUND. reservationId: " + reservationId);
         }
         return payments.stream().map(mapper::toPaymentResponse).toList();
     }
 
     @Override
     public PaymentResponse getById(Long id) {
-        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new RuntimeException("Payment not found"));
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new NotFoundException("PAYMENT NOT FOUND. id: " + id));
         return mapper.toPaymentResponse(payment);
     }
 }

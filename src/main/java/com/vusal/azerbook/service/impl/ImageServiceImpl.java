@@ -2,6 +2,8 @@ package com.vusal.azerbook.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.vusal.azerbook.exception.CloudinaryException;
+import com.vusal.azerbook.exception.NotFoundException;
 import com.vusal.azerbook.model.response.ImageResponse;
 import com.vusal.azerbook.model.entity.Hotel;
 import com.vusal.azerbook.model.entity.Image;
@@ -31,7 +33,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     @Transactional
     public ImageResponse upload(Long hotelId, MultipartFile file, Boolean isMain) {
-        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new RuntimeException("HotelNotFound"));
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. hotelID: " + hotelId));
 
         if (Boolean.TRUE.equals(isMain)) {
             imageRepository.findByHotelIdAndIsMainTrue(hotelId)
@@ -46,7 +48,7 @@ public class ImageServiceImpl implements ImageService {
             uploadResult = cloudinary.uploader().upload(file.getBytes(),
                     ObjectUtils.asMap("folder", "azerbook/hotels"));
         } catch (IOException e) {
-            throw new RuntimeException("Cloudinary upload failed", e);
+            throw new CloudinaryException("AN ERROR OCCURRED WHILE UPLOADING THE IMAGE TO CLOUDINARY.",e);
         }
 
         Image image = Image.builder()
@@ -68,19 +70,19 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ImageResponse getMainImageByHotelId(Long hotelId) {
-        Image image = imageRepository.findByHotelIdAndIsMainTrue(hotelId).orElseThrow(() -> new RuntimeException("Main image not found"));
+        Image image = imageRepository.findByHotelIdAndIsMainTrue(hotelId).orElseThrow(() -> new NotFoundException("MAIN IMAGE NOT FOUND. hotelID: " + hotelId));
         return mapper.toImageResponse(image);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        Image image = imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+        Image image = imageRepository.findById(id).orElseThrow(() -> new NotFoundException("IMAGE NOT FOUND. ID: " + id));
 
         try {
             cloudinary.uploader().destroy(image.getPublicId(), ObjectUtils.emptyMap());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to delete from Cloudinary", e);
+            throw new CloudinaryException("ERROR WHILE DELETING THE IMAGE FROM CLOUDINARY.",e);
         }
         imageRepository.delete(image);
     }
