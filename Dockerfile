@@ -5,6 +5,8 @@ WORKDIR /app
 # 2. Addım: Kodları içəri kopyalayırıq
 COPY . .
 
+# 🔥 BURANI ƏLAVƏ ET: Gradlew faylına icra icazəsi veririk
+RUN chmod +x gradlew
 # 3. Addım: Gradle vasitəsilə layihəni yığırıq (Jar faylı yaradırıq)
 RUN ./gradlew clean build -x test
 
