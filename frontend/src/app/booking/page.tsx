@@ -64,11 +64,12 @@ function BookingContent() {
     async function loadData() {
       if (!hotelId || !roomId) return;
       try {
-        const hRes = await fetch(`http://localhost:8080/api/hotels/${hotelId}`);
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+        const hRes = await fetch(`${API_URL}/api/hotels/${hotelId}`);
         const hData = await hRes.json();
         setHotel(Array.isArray(hData) ? hData[0] : hData);
 
-        const rRes = await fetch(`http://localhost:8080/api/rooms/hotel/${hotelId}`);
+        const rRes = await fetch(`${API_URL}/api/rooms/hotel/${hotelId}`);
         const rData = await rRes.json();
         setRoom(rData.find((r: any) => r.id.toString() === roomId));
       } catch (error) {
