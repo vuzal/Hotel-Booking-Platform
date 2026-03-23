@@ -4,9 +4,9 @@ spring:
   application:
     name: Azerbook
   datasource:
-    url: jdbc:postgresql://localhost:5432/book
-    username: vusal
-    password: azerbook55
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/book}
+    username: ${DB_USER:vusal}
+    password: ${DB_PASS:azerbook55}
   jpa:
     hibernate:
       ddl-auto: update
