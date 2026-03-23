@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Calendar, Settings, Heart, MessageSquare, LogOut, BookOpen,
@@ -16,6 +15,7 @@ import Footer from '@/components/Footer';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { apiFetch } from '@/lib/api';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 
@@ -136,7 +136,7 @@ function BookingCard({ booking, onCancel }: { booking: any; onCancel: (id: strin
   );
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
@@ -643,5 +643,18 @@ export default function DashboardPage() {
       </div>
       <Footer />
     </div>
+  );
+}
+// Faylın ən sonuna bunu əlavə et:
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen flex flex-col items-center justify-center bg-white">
+        <div className="w-12 h-12 border-4 border-slate-100 border-t-orange-500 rounded-full animate-spin mb-4" />
+        <p className="text-[10px] font-black uppercase tracking-[4px] text-slate-400">Yüklənir...</p>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
