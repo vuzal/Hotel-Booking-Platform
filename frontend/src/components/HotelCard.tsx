@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { Star, MapPin, Wifi, Coffee, Car, Dumbbell, Waves, ChevronLeft, ChevronRight, Heart, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,7 @@ const AMENITY_ICONS: Record<string, React.ReactNode> = {
   'Səhər yeməyi': <Coffee size={14} />,
 };
 
-export default function HotelCard({ hotel, variant = 'grid', isFavorite = false }: HotelCardProps) {
+function HotelCardContent({ hotel, variant = 'grid', isFavorite = false }: HotelCardProps) {
   const [imgIndex, setImgIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(isFavorite);
   const [isHovered, setIsHovered] = useState(false);
@@ -174,5 +174,12 @@ export default function HotelCard({ hotel, variant = 'grid', isFavorite = false 
         </div>
       </div>
     </div>
+  );
+}
+export default function HotelCard(props: HotelCardProps) {
+  return (
+    <Suspense fallback={<div className="w-full h-[380px] bg-slate-50 animate-pulse rounded-[24px]"></div>}>
+      <HotelCardContent {...props} />
+    </Suspense>
   );
 }

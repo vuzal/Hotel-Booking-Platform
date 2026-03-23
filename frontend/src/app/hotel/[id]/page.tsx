@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -17,7 +17,7 @@ import Footer from '@/components/Footer';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 
-export default function HotelDetailPage({ params }: { params: Promise<{ id: string }> }) {
+function HotelDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const id = resolvedParams.id;
   const router = useRouter();
@@ -28,7 +28,6 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
   const [isLoading, setIsLoading] = useState(true);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [guestCount, setGuestCount] = useState(1);
-  // ... digər state-lər (guestCount, selectedRoom və s.)
   const searchParams = useSearchParams();
   console.log("Linkdən gələn bütün datalar:", searchParams.toString());
 
@@ -468,3 +467,19 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     </div>
   );
 }
+
+// Faylın düz ƏN SONUNA BURA YAPIŞDIR:
+
+export default function HotelDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <Suspense fallback={
+      <div className="h-screen flex flex-col items-center justify-center bg-white">
+        <div className="w-16 h-16 border-4 border-slate-100 border-t-orange-500 rounded-full animate-spin mb-4" />
+        <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Yüklənir...</p>
+      </div>
+    }>
+      <HotelDetailContent params={params} />
+    </Suspense>
+  );
+}
+
