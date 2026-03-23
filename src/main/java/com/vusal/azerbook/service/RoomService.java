@@ -10,10 +10,13 @@ public interface RoomService {
     RoomResponse create(RoomCreateRequest request);
 
     RoomResponse getById(Long id);
+    List<RoomResponse> getAll();
 
     List<RoomResponse> getByHotelId(Long hotelId);
 
     RoomResponse update(Long id, RoomCreateRequest request);
+
+    void updateHotelBasePrice(Long hotelId);
 
     void delete(Long id);
 }

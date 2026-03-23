@@ -19,9 +19,12 @@ public class HotelDetailResponse {
     String  city;
     String address;
     Double rating;
+    Integer stars;
+    Double basePrice;
+    String mainImageUrl;
     List<RoomResponse> rooms;
     List<ReviewResponse> reviews;
-    List<ImageResponse> images;
+    List<String> amenities;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }

@@ -17,7 +17,7 @@ public class UserRegisterRequest {
     String email;
 
     @NotBlank(message = "Password is required")
-    @Size(message = "Password must be at least 6 characters")
+    @Size( min=6 ,message = "Password must be at least 6 characters")
     String password;
 
     @NotBlank(message = "First name is required")
@@ -29,6 +29,8 @@ public class UserRegisterRequest {
     @NotBlank(message = "Phone is required")
     @Pattern(regexp = "^(?:\\+994|0)(50|51|55|70|77|99|10|60)\\d{7}$")
     String phone;
+
+    Boolean rememberMe;
 
 
 }
