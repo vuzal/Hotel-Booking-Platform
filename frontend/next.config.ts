@@ -17,12 +17,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  outputFileTracingRoot: path.resolve(__dirname, '../../'),
+  // 🔥 TƏHLÜKƏLİ SƏTİR SİLİNDİ! (Vercel-i donduran hissə)
+
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  experimental: {
+    // Vercel-in beyni rahat işləsin deyə
+    webpackBuildWorker: true,
   },
   turbopack: {
     rules: {
