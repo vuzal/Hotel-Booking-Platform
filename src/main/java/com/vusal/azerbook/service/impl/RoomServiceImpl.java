@@ -12,6 +12,7 @@ import com.vusal.azerbook.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -33,6 +34,7 @@ public class RoomServiceImpl implements RoomService {
                 .capacity(request.getCapacity())
                 .build();
         Room roomCreated = roomRepository.save(room);
+        updateHotelBasePrice(request.getHotelId());
         return mapper.toRoomResponse(roomCreated);
     }
 
@@ -40,6 +42,12 @@ public class RoomServiceImpl implements RoomService {
     public RoomResponse getById(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundException("ROOM NOT FOUND. id: " + id));
         return mapper.toRoomResponse(room);
+    }
+
+    @Override
+    public List<RoomResponse> getAll() {
+        return roomRepository.findAll().stream()
+                .map(mapper::toRoomResponse).toList();
     }
 
     @Override
@@ -56,7 +64,18 @@ public class RoomServiceImpl implements RoomService {
         room.setPrice(request.getPrice());
         room.setCapacity(request.getCapacity());
         Room updated = roomRepository.save(room);
+        updateHotelBasePrice(request.getHotelId());
         return mapper.toRoomResponse(updated);
+
+    }
+
+    @Override
+    public void updateHotelBasePrice(Long hotelId) {
+        BigDecimal minPrice = roomRepository.findMinPriceByHotelId(hotelId);
+
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. id: " + hotelId));
+        hotel.setBasePrice(minPrice != null ? minPrice : BigDecimal.valueOf(0.0));
+        hotelRepository.save(hotel);
 
     }
 
@@ -65,5 +84,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundException("ROOM NOT FOUND. id: " + id));
         room.setIsActive(false);
         roomRepository.save(room);
+        updateHotelBasePrice(room.getHotel().getId());
+
     }
 }

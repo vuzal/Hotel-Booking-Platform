@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 public class ReservationResponse {
 
     Long id;
+    Long hotelId;
+    String guestName;
     String hotelName;
     String roomName;
     LocalDate checkIn;
@@ -23,6 +25,7 @@ public class ReservationResponse {
     BigDecimal totalPrice;
     ReservationStatus status;
     Integer guestCount;
+    String hotelMainImageUrl;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 

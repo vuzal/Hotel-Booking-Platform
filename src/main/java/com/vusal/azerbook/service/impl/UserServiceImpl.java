@@ -9,6 +9,8 @@ import com.vusal.azerbook.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -20,6 +22,12 @@ public class UserServiceImpl implements UserService {
     public UserResponse getById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("USER NOT FOUND. id: " + id));
         return mapper.toUserResponse(user);
+    }
+
+    @Override
+    public List<UserResponse> getAll() {
+        return userRepository.findAll().stream()
+                .map(mapper::toUserResponse).toList();
     }
 
     @Override

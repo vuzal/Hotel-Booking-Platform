@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class RoomController {
 
     private final RoomService roomService;
@@ -29,6 +30,12 @@ public class RoomController {
     @GetMapping("/{id}")
     public ResponseEntity<RoomResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(roomService.getById(id));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<RoomResponse>> getAll() {
+        return ResponseEntity.ok(roomService.getAll());
     }
 
     @GetMapping("/hotel/{hotelId}")

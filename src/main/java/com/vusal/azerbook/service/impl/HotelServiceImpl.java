@@ -11,7 +11,9 @@ import com.vusal.azerbook.model.response.HotelDetailResponse;
 import com.vusal.azerbook.model.response.HotelResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -23,13 +25,8 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public HotelResponse create(HotelCreateRequest request) {
-        Hotel hotel = Hotel.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .city(request.getCity())
-                .address(request.getAddress())
-                .rating(0.0)
-                .build();
+        Hotel hotel = mapper.toHotelEntity(request);
+
         Hotel saved = hotelRepository.save(hotel);
         return mapper.toHotelResponse(saved);
     }
@@ -49,13 +46,22 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public List<HotelResponse> getByCity(String city) {
-        List<Hotel> hotels = hotelRepository.findByCityIgnoreCase(city);
+        List<Hotel> hotels = hotelRepository.findByCityContainingIgnoreCase(city);
 
         if (hotels.isEmpty()) {
             throw new NotFoundException("HOTEL NOT FOUND. CITY: " + city);
         }
         return hotels.stream()
                 .map(mapper::toHotelResponse).toList();
+    }
+
+    public Map<String,Long>getCityHotelCounts(){
+        List<String>cities=List.of("Bakı", "Şəki", "Qəbələ", "Quba", "Şahdağ", "Naftalan");
+        Map<String,Long> counts = new HashMap<>();
+        for ( String city:cities){
+            counts.put(city,hotelRepository.countByCity(city));
+        }
+        return counts;
     }
 
     @Override

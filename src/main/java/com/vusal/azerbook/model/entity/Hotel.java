@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,17 @@ public class Hotel {
     @Column(nullable = false)
     Double rating;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "hotel_amenities", joinColumns = @JoinColumn(name = "hotel_id"))
+    @Column(name = "amenity")
+    List<String> amenities; // ["WiFi", "Pool", "Parking"] kimi
+
+    @Column(nullable = false)
+    Integer stars; // 1-5 arası
+
+    @Column(nullable = false)
+    BigDecimal basePrice; // Otelin "başlayan qiyməti"
+
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     Boolean isActive = true;
@@ -60,8 +72,7 @@ public class Hotel {
     @Builder.Default
     List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hotel")
-    @Builder.Default
-    List<Image> images = new ArrayList<>();
+    @Column(nullable = false)
+    String mainImageUrl;
 
 }

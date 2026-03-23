@@ -5,6 +5,7 @@ import com.vusal.azerbook.model.response.HotelDetailResponse;
 import com.vusal.azerbook.model.response.HotelResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface HotelService {
 
@@ -15,6 +16,8 @@ public interface HotelService {
     HotelDetailResponse getById(Long id);
 
     List<HotelResponse> getByCity(String city);
+
+    Map<String,Long> getCityHotelCounts();
 
     List<HotelResponse> searchByName(String name);
 

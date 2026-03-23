@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,6 +16,9 @@ public class HotelResponse {
     String city;
     String address;
     Double rating;
+    Integer stars;
+    Double basePrice;
+    List<String> amenities;
     String mainImageUrl;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

@@ -12,10 +12,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/hotels")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class HotelController {
 
     private final HotelService hotelService;
@@ -24,6 +26,7 @@ public class HotelController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HotelResponse> createHotel(@Valid @RequestBody HotelCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(hotelService.create(request));
+
     }
 
     @GetMapping
@@ -39,6 +42,11 @@ public class HotelController {
     @GetMapping("/city/{city}")
     public ResponseEntity<List<HotelResponse>> getByCity(@PathVariable String city) {
         return ResponseEntity.status(HttpStatus.OK).body(hotelService.getByCity(city));
+    }
+
+    @GetMapping("/city-counts")
+    public ResponseEntity<Map<String,Long>>getCityCounts(){
+        return ResponseEntity.ok(hotelService.getCityHotelCounts());
     }
 
     @GetMapping("/search")

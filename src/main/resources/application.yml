@@ -10,18 +10,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+
 server:
   port: 8080
 
-
-cloudinary:
-  cloud-name: dxmoidh8h
-  api-key: 377899627782968
-  api-secret: Jo7IDtEa-GLq8uDSQl3T2JZ8uQg
 
 
 jwt:
