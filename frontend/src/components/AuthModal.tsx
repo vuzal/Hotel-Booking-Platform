@@ -60,7 +60,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onLo
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
 
-    // 1. Sadə yoxlamalar (Validation)
     if (password !== confirmPassword) {
       return toast.error("Şifrələr uyğun gəlmir!");
     }
@@ -70,7 +69,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onLo
 
     setIsLoading(true);
     try {
-      // 2. Backend-ə sorğu
+      // 1. QEYDİYYAT SORĞUSU
       const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,39 +86,52 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onLo
 
       if (!res.ok) {
         let errorMessages = "";
-
-        // 🔥 1. Əgər Backend-dən `validationErrors` obyekti gəlibsə:
         if (data.validationErrors && typeof data.validationErrors === 'object') {
-          // Bütün xətaları (şifrə, nömrə və s.) bir yerə yığırıq
           errorMessages = Object.values(data.validationErrors)
             .map(err => {
-              // Regex mesajı istifadəçiyə qəribə görünməsin deyə onu "İnsan dilinə" çeviririk
               if (String(err).includes('match "^(?:\\+994')) return 'Telefon nömrəsi düzgün formatda deyil (məs: +994501234567)';
               return err;
-            })
-            .join('\n• ');
-        }
-        // 2. Sadəcə ümumi mesaj gəlibsə (məs: "Bu email artıq var"):
-        else if (data.message && data.message !== "Input validation failed") {
+            }).join('\n• ');
+        } else if (data.message && data.message !== "Input validation failed") {
           errorMessages = data.message;
-        }
-        // 3. Heç biri yoxdursa:
-        else {
+        } else {
           errorMessages = "Məlumatları düzgün daxil etdiyinizdən əmin olun.";
         }
-
-        // Toplanmış xətaları ekranda Toast olaraq partlat!
         throw new Error(`Düzəliş edin:\n• ${errorMessages}`);
       }
 
-      // 3. Uğurlu olduqda ediləcəklər
-      toast.success('Qeydiyyat uğurla tamamlandı! İndi daxil ola bilərsiniz.');
+      // 2. QEYDİYYAT UĞURLUDURSA, DƏRHAL LOGIN EDİRİK (AUTO-LOGIN)
+      toast.success('Qeydiyyat uğurludur! Sistemə daxil olunur...');
 
-      // Qeydiyyatdan sonra avtomatik "Daxil ol" tabına keçid
-      setActiveTab('login');
+      const loginRes = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }), // Bayaq qeydiyyatdan keçdiyi email və şifrə
+      });
+
+      const loginData = await loginRes.json();
+
+      if (loginRes.ok) {
+        // Tokenləri yaddaşa yazırıq
+        localStorage.setItem('accessToken', loginData.tokens.accessToken);
+        localStorage.setItem('refreshToken', loginData.tokens.refreshToken);
+
+        toast.success('Xoş gəldiniz!');
+
+        // Modalı bağla və valideyn komponentə (Header-ə) daxil olduğunu xəbər ver
+        onLogin?.();
+        onClose();
+
+        // Formu təmizləyək
+        setFirstName(''); setLastName(''); setEmail('');
+        setPhone(''); setPassword(''); setConfirmPassword(''); setAgreeTerms(false);
+      } else {
+        // Əgər auto-login alınmasa (nadir hallarda), login tabına ataq özü girsin
+        toast.error('Giriş zamanı xəta oldu. Zəhmət olmasa daxil olun.');
+        setActiveTab('login');
+      }
 
     } catch (error: any) {
-      // Bütün tutulan xətalar burada Toast kimi çıxacaq
       toast.error(error.message);
     } finally {
       setIsLoading(false);
