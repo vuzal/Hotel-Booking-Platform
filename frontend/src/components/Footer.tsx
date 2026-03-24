@@ -13,7 +13,7 @@ export default function Footer() {
                 <span className="text-white font-bold text-base">A</span>
               </div>
               <span className="font-bold text-2xl">
-                Azer<span className="text-[#FF6B35]">Book</span>
+                Dubl<span className="text-[#FF6B35]">Stay</span>
               </span>
             </div>
             <p className="text-blue-200 text-sm leading-relaxed">
@@ -95,8 +95,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={16} className="text-[#FF6B35] flex-shrink-0" />
-                <a href="mailto:info@azerbook.az" className="text-blue-200 hover:text-[#FF6B35] text-sm transition-colors">
-                  info@azerbook.az
+                <a href="mailto:info@dublstay.az" className="text-blue-200 hover:text-[#FF6B35] text-sm transition-colors">
+                  info@dublstay.az
                 </a>
               </li>
             </ul>
@@ -123,7 +123,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-blue-300 text-xs">
-            © 2025 AzerBook. Bütün hüquqlar qorunur.
+            © 2025 DublStay. Bütün hüquqlar qorunur.
           </p>
           <div className="flex items-center gap-4">
             {['Məxfilik Siyasəti', 'İstifadə Şərtləri', 'Cookie'].map((item) => (

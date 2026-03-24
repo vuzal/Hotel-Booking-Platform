@@ -77,10 +77,10 @@ export default function Navbar() {
             {/* 1. LOGO SƏHƏSİ */}
             <Link href="/" className="flex items-center gap-2 group">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#FF6B35] to-[#FF8C61] flex items-center justify-center shadow-lg shadow-orange-500/20 group-hover:rotate-6 transition-transform">
-                <span className="text-white font-black text-xl italic tracking-tighter">A</span>
+                <span className="text-white font-black text-xl italic tracking-tighter">D</span>
               </div>
               <span className={`font-black text-2xl tracking-tight transition-colors ${isTransparent ? 'text-white' : 'text-[#1E3A5F]'}`}>
-                Azer<span className="text-[#FF6B35]">Book</span>
+                Dubl<span className="text-[#FF6B35]">Stay</span>
               </span>
             </Link>
 

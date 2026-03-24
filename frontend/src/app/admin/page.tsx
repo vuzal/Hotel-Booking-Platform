@@ -275,7 +275,7 @@ export default function AdminPanel() {
                         </button>
                         <div>
                             <h1 className="text-xl md:text-2xl font-bold text-gray-900">İdarəetmə Paneli</h1>
-                            <p className="text-xs md:text-sm text-gray-500 hidden sm:block">AzerBook sisteminə tam nəzarət</p>
+                            <p className="text-xs md:text-sm text-gray-500 hidden sm:block">DublStay sisteminə tam nəzarət</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">

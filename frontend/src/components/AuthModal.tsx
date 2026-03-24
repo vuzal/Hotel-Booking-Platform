@@ -141,12 +141,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onLo
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden rounded-[28px] border-none shadow-2xl bg-white max-h-[95vh] overflow-y-auto z-[101] no-scrollbar">
-        <DialogTitle className="sr-only">AzerBook</DialogTitle>
+        <DialogTitle className="sr-only">DublStay</DialogTitle>
 
         {/* HEADER: Minimalist & Premium */}
         <div className="pt-8 pb-4 px-8 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#1E3A5F] mb-4 shadow-lg shadow-blue-900/10">
-            <span className="text-white font-black text-2xl italic">A</span>
+            <span className="text-white font-black text-2xl italic">D</span>
           </div>
           <h2 className="text-xl font-black text-slate-800 tracking-tight">
             {activeTab === 'login' ? 'Yenidən Xoş Gəldiniz' : 'Hesab Yaradın'}

@@ -148,7 +148,7 @@ function HotelDetailContent({ params }: { params: Promise<{ id: string }> }) {
   if (isLoading) return (
     <div className="h-screen flex flex-col items-center justify-center bg-white">
       <div className="w-16 h-16 border-4 border-slate-100 border-t-orange-500 rounded-full animate-spin mb-4" />
-      <p className="font-black text-slate-900 uppercase tracking-widest text-xs">AzerBook yüklənir...</p>
+      <p className="font-black text-slate-900 uppercase tracking-widest text-xs">DublStay yüklənir...</p>
     </div>
   );
 

@@ -272,7 +272,7 @@ export default function SearchPage() {
     <Suspense fallback={
       <div className="h-screen flex flex-col items-center justify-center bg-white">
         <div className="w-12 h-12 border-4 border-slate-100 border-t-orange-500 rounded-full animate-spin mb-4" />
-        <p className="text-[10px] font-black uppercase tracking-[4px] text-slate-400">AzerBook</p>
+        <p className="text-[10px] font-black uppercase tracking-[4px] text-slate-400">DublStay</p>
       </div>
     }>
       <SearchContent />

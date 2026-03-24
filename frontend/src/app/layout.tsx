@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AzerBook - Azerbaijan's Premier Hotel Booking Platform",
+  title: "DublStay - Azerbaijan's Premier Hotel Booking Platform",
   description: "Book hotels across Azerbaijan - Baku, Sheki, Gabala, Quba, Shahdag and more. Best prices guaranteed.",
 };
 
