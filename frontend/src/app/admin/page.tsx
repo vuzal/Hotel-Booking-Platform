@@ -6,7 +6,7 @@ import {
     LayoutDashboard, Building, BedDouble,
     CalendarCheck, Users, LogOut, CheckCircle,
     XCircle, Clock, Plus, Trash2, Edit, Star, Hash,
-    Wallet, Activity, TrendingUp, CheckCircle2, UserCog, ShieldCheck, Ban
+    Wallet, Activity, TrendingUp, CheckCircle2, UserCog, ShieldCheck, Ban, Menu
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
@@ -23,6 +23,7 @@ export default function AdminPanel() {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // <--- YENİ STATE
 
     // --- STATELƏR ---
     const [reservations, setReservations] = useState<any[]>([]);
@@ -217,19 +218,35 @@ export default function AdminPanel() {
 
     return (
         <div className="min-h-screen flex bg-gray-50 relative">
+            {/* MOBİL ÜÇÜN QARA ARXA PLAN (OVERLAY) */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-[#0F172A]/70 z-40 md:hidden backdrop-blur-sm transition-opacity"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
 
             {/* SIDEBAR */}
-            <aside className="w-64 bg-[#1E3A5F] text-white flex flex-col hidden md:flex fixed h-full z-10 shadow-2xl">
-                <div className="p-6 flex items-center gap-3 border-b border-white/10">
-                    <div className="w-8 h-8 rounded-lg bg-[#FF6B35] flex items-center justify-center font-bold">A</div>
-                    <span className="font-bold text-xl tracking-wide">Admin<span className="text-[#FF6B35]">Panel</span></span>
+            <aside className={`w-64 bg-[#1E3A5F] text-white flex flex-col fixed h-full z-50 shadow-2xl transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+                <div className="p-6 flex items-center justify-between border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#FF6B35] flex items-center justify-center font-bold">A</div>
+                        <span className="font-bold text-xl tracking-wide">Admin<span className="text-[#FF6B35]">Panel</span></span>
+                    </div>
+                    {/* Mobil menyunu bağlamaq üçün X düyməsi */}
+                    <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-white/70 hover:text-white">
+                        <XCircle size={24} />
+                    </button>
                 </div>
 
-                <div className="flex-1 py-6 flex flex-col gap-2 px-4">
+                <div className="flex-1 py-6 flex flex-col gap-2 px-4 overflow-y-auto">
                     {ADMIN_MENU.map(item => (
                         <button
                             key={item.id}
-                            onClick={() => setActiveTab(item.id)}
+                            onClick={() => {
+                                setActiveTab(item.id);
+                                setIsMobileMenuOpen(false); // Menyu seçiləndə avtomatik bağlansın
+                            }}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === item.id ? 'bg-[#FF6B35] text-white shadow-lg shadow-[#FF6B35]/30' : 'text-blue-200 hover:bg-white/10 hover:text-white'}`}
                         >
                             <item.icon size={18} /> {item.label}
@@ -247,10 +264,19 @@ export default function AdminPanel() {
             {/* MAIN CONTENT */}
             <main className="flex-1 ml-0 md:ml-64 p-8 max-w-[1600px] mx-auto">
 
-                <header className="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900">İdarəetmə Paneli</h1>
-                        <p className="text-sm text-gray-500">AzerBook sisteminə tam nəzarət</p>
+                <header className="flex justify-between items-center mb-4 md:mb-8 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-4">
+                        {/* Mobil menyu düyməsi */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            className="md:hidden p-2 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                        >
+                            <Menu size={24} />
+                        </button>
+                        <div>
+                            <h1 className="text-xl md:text-2xl font-bold text-gray-900">İdarəetmə Paneli</h1>
+                            <p className="text-xs md:text-sm text-gray-500 hidden sm:block">AzerBook sisteminə tam nəzarət</p>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="text-right hidden sm:block">
