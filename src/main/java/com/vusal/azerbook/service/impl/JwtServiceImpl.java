@@ -70,7 +70,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    private <T> T extractClaim(String token, SecretKey key, Function<Claims, T> claimsResolver) {
+    private <T> T extractClaim(String token, SecretKey key, Function<Claims,T> claimsResolver) {
         final Claims claims = extractAllClaims(token, key);
         return claimsResolver.apply(claims);
     }

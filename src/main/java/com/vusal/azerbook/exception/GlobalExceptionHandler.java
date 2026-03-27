@@ -55,10 +55,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.FORBIDDEN, "Forbidden", ex.getMessage());
     }
 
-    @ExceptionHandler(CloudinaryException.class)
-    public ResponseEntity<ErrorResponse> handleCloudinaryException(CloudinaryException ex) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Cloudinary Error", ex.getMessage());
-    }
 
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleAlreadyExistsException(AlreadyExistsException ex) {
