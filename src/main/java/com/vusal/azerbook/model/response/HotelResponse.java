@@ -15,6 +15,7 @@ public class HotelResponse {
     String name;
     String city;
     String address;
+    String description;
     Double rating;
     Integer stars;
     Double basePrice;

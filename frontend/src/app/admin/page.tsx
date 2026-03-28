@@ -30,6 +30,9 @@ export default function AdminPanel() {
     const [hotels, setHotels] = useState<any[]>([]);
     const [rooms, setRooms] = useState<any[]>([]);
     const [users, setUsers] = useState<any[]>([]); // YENİ: İstifadəçilər
+    // Yeniləmə (Edit) üçün statelər
+    const [editingHotelId, setEditingHotelId] = useState<number | null>(null);
+    const [editingRoomId, setEditingRoomId] = useState<number | null>(null);
 
     // Otel Modalı
     const [isHotelModalOpen, setIsHotelModalOpen] = useState(false);
@@ -138,18 +141,27 @@ export default function AdminPanel() {
             const payload = {
                 name: hotelForm.name, description: hotelForm.description, city: hotelForm.city, address: hotelForm.address,
                 stars: hotelForm.stars, rating: Number(hotelForm.stars), basePrice: parseFloat(hotelForm.basePrice),
-                mainImageUrl: hotelForm.mainImageUrl, amenities: hotelForm.amenities.split(',').map(item => item.trim()).filter(item => item !== '')
+                mainImageUrl: hotelForm.mainImageUrl,
+                amenities: typeof hotelForm.amenities === 'string' ? hotelForm.amenities.split(',').map(item => item.trim()).filter(item => item !== '') : hotelForm.amenities
             };
-            const res = await apiFetch('/api/hotels', {
-                method: 'POST', body: JSON.stringify(payload)
-            });
 
-            // ✅ DOĞRU KOD:
+            // Dinamik URL və Metod
+            const url = editingHotelId ? `/api/hotels/${editingHotelId}` : '/api/hotels';
+            const method = editingHotelId ? 'PUT' : 'POST';
+
+            const res = await apiFetch(url, { method, body: JSON.stringify(payload) });
+
             if (res.ok) {
-                const newHotel = await res.json();
-                setHotels(prev => [...prev, newHotel]);
-                toast.success('Yeni otel uğurla əlavə edildi!');
+                const savedHotel = await res.json();
+                if (editingHotelId) {
+                    setHotels(prev => prev.map(h => h.id === editingHotelId ? savedHotel : h));
+                    toast.success('Otel uğurla yeniləndi!');
+                } else {
+                    setHotels(prev => [...prev, savedHotel]);
+                    toast.success('Yeni otel uğurla əlavə edildi!');
+                }
                 setIsHotelModalOpen(false);
+                setEditingHotelId(null);
                 setHotelForm({ name: '', description: '', city: '', address: '', stars: 5, basePrice: '', mainImageUrl: '', amenities: '' });
             } else { toast.error('Xəta baş verdi'); }
         } catch (error) { toast.error('Sistem xətası'); }
@@ -175,18 +187,26 @@ export default function AdminPanel() {
             const payload = {
                 hotelId: Number(roomForm.hotelId), name: roomForm.name, type: roomForm.type, price: parseFloat(roomForm.price), capacity: Number(roomForm.capacity),
             };
-            const res = await apiFetch('/api/rooms', {
-                method: 'POST', body: JSON.stringify(payload)
-            });
 
-            // ✅ DOĞRU KOD:
+            // Dinamik URL və Metod
+            const url = editingRoomId ? `/api/rooms/${editingRoomId}` : '/api/rooms';
+            const method = editingRoomId ? 'PUT' : 'POST';
+
+            const res = await apiFetch(url, { method, body: JSON.stringify(payload) });
+
             if (res.ok) {
-                const newRoom = await res.json();
-                setRooms(prev => [...prev, newRoom]);
-                toast.success('Yeni otaq uğurla əlavə edildi!');
+                const savedRoom = await res.json();
+                if (editingRoomId) {
+                    setRooms(prev => prev.map(r => r.id === editingRoomId ? savedRoom : r));
+                    toast.success('Otaq uğurla yeniləndi!');
+                } else {
+                    setRooms(prev => [...prev, savedRoom]);
+                    toast.success('Yeni otaq uğurla əlavə edildi!');
+                }
                 setIsRoomModalOpen(false);
+                setEditingRoomId(null);
                 setRoomForm({ hotelId: '', name: '', type: '', price: '', capacity: 2 });
-            } else { toast.error('Otaq əlavə edilərkən xəta baş verdi'); }
+            } else { toast.error('Otaq yadda saxlanılarkən xəta baş verdi'); }
         } catch (error) { toast.error('Sistem xətası'); }
         finally { setIsSubmittingRoom(false); }
     };
@@ -208,6 +228,36 @@ export default function AdminPanel() {
         if (s === 'COMPLETED') return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700"><CheckCircle size={12} /> Tamamlanıb</span>;
         if (s === 'CANCELLED') return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700"><XCircle size={12} /> Ləğv edilib</span>;
         return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700">{status}</span>;
+    };
+
+    // Oteli Yeniləmək üçün Modalı açan funksiya
+    const openHotelEditModal = (hotel: any) => {
+        setHotelForm({
+            name: hotel.name || '',
+            description: hotel.description || '',
+            city: hotel.city || '',
+            address: hotel.address || '',
+            stars: hotel.stars || 5,
+            basePrice: hotel.basePrice?.toString() || '',
+            mainImageUrl: hotel.mainImageUrl || '',
+            // Əgər amenities massivdirsə (array), onu vergüllü stringə çeviririk ki, inputda görünsün
+            amenities: Array.isArray(hotel.amenities) ? hotel.amenities.join(', ') : (hotel.amenities || '')
+        });
+        setEditingHotelId(hotel.id);
+        setIsHotelModalOpen(true);
+    };
+
+    // Otağı Yeniləmək üçün Modalı açan funksiya
+    const openRoomEditModal = (room: any) => {
+        setRoomForm({
+            hotelId: room.hotelId?.toString() || '',
+            name: room.name || '',
+            type: room.type || '',
+            price: room.price?.toString() || '',
+            capacity: room.capacity || 2
+        });
+        setEditingRoomId(room.id);
+        setIsRoomModalOpen(true);
     };
 
     // Dinamik Dashboard Statistikaları
@@ -456,8 +506,11 @@ export default function AdminPanel() {
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in duration-300">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                             <h2 className="text-lg font-bold text-gray-900">Otellərin Siyahısı</h2>
-                            <button onClick={() => setIsHotelModalOpen(true)} className="flex items-center gap-2 bg-[#FF6B35] hover:bg-[#e55a24] text-white px-4 py-2 rounded-xl text-sm font-medium">
-                                <Plus size={16} /> Yeni Otel
+                            <button onClick={() => {
+                                setEditingHotelId(null);
+                                setHotelForm({ name: '', description: '', city: '', address: '', stars: 5, basePrice: '', mainImageUrl: '', amenities: '' });
+                                setIsHotelModalOpen(true);
+                            }} className="flex items-center gap-2 bg-[#FF6B35] hover:bg-[#e55a24] text-white px-4 py-2 rounded-xl text-sm font-medium">                                <Plus size={16} /> Yeni Otel
                             </button>
                         </div>
                         <div className="overflow-x-auto">
@@ -480,8 +533,13 @@ export default function AdminPanel() {
                                             <td className="px-6 py-4 font-medium text-[#1E3A5F]">{hotel.city}</td>
                                             <td className="px-6 py-4"><div className="flex items-center gap-1 text-amber-400">{hotel.stars} <Star size={12} className="fill-amber-400" /></div></td>
                                             <td className="px-6 py-4 font-bold text-[#FF6B35]">{hotel.basePrice} AZN</td>
-                                            <td className="px-6 py-4 text-right">
-                                                <button onClick={() => handleDeleteHotel(hotel.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+                                            <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                                <button onClick={() => openHotelEditModal(hotel)} className="p-2 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg" title="Yenilə">
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button onClick={() => handleDeleteHotel(hotel.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg" title="Sil">
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </td>
                                         </tr>
                                     )) : (<tr><td colSpan={6} className="px-6 py-10 text-center">Otellər yüklənir...</td></tr>)}
@@ -499,8 +557,11 @@ export default function AdminPanel() {
                                 <h2 className="text-lg font-bold text-gray-900">Otaqların Siyahısı</h2>
                                 <p className="text-sm text-gray-500">Otellərə aid otaqları idarə edin</p>
                             </div>
-                            <button onClick={() => setIsRoomModalOpen(true)} className="flex items-center gap-2 bg-[#1E3A5F] hover:bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                                <Plus size={16} /> Yeni Otaq
+                            <button onClick={() => {
+                                setEditingRoomId(null);
+                                setRoomForm({ hotelId: '', name: '', type: '', price: '', capacity: 2 });
+                                setIsRoomModalOpen(true);
+                            }} className="flex items-center gap-2 bg-[#1E3A5F] hover:bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-medium">                                <Plus size={16} /> Yeni Otaq
                             </button>
                         </div>
                         <div className="overflow-x-auto">
@@ -520,8 +581,13 @@ export default function AdminPanel() {
                                             <td className="px-6 py-4"><span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider">{room.type}</span></td>
                                             <td className="px-6 py-4 flex items-center gap-1 font-bold"><Users size={14} className="text-blue-500" /> {room.capacity}</td>
                                             <td className="px-6 py-4 font-bold text-[#FF6B35]">{room.price} AZN</td>
-                                            <td className="px-6 py-4 text-right">
-                                                <button onClick={() => handleDeleteRoom(room.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+                                            <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                                <button onClick={() => openRoomEditModal(room)} className="p-2 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg" title="Yenilə">
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button onClick={() => handleDeleteRoom(room.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg" title="Sil">
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </td>
                                         </tr>
                                     )) : (<tr><td colSpan={7} className="px-6 py-10 text-center">Heç bir otaq tapılmadı</td></tr>)}
@@ -538,7 +604,7 @@ export default function AdminPanel() {
                 <div className="fixed inset-0 bg-[#0F172A]/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
                     <div className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl">
                         <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h2 className="font-bold text-xl text-[#1E3A5F]">Yeni Otel</h2>
+                            <h2 className="font-bold text-xl text-[#1E3A5F]">{editingHotelId ? 'Oteli Yenilə' : 'Yeni Otel'}</h2>
                             <button onClick={() => setIsHotelModalOpen(false)} className="text-gray-400 hover:text-red-500 transition-colors"><XCircle size={24} /></button>
                         </div>
                         <form onSubmit={handleCreateHotel} className="p-6 space-y-4">
@@ -570,7 +636,7 @@ export default function AdminPanel() {
                 <div className="fixed inset-0 bg-[#0F172A]/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
                     <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl">
                         <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h2 className="font-bold text-xl text-[#1E3A5F]">Yeni Otaq</h2>
+                            <h2 className="font-bold text-xl text-[#1E3A5F]">{editingRoomId ? 'Otağı Yenilə' : 'Yeni Otaq'}</h2>
                             <button onClick={() => setIsRoomModalOpen(false)} className="text-gray-400 hover:text-red-500 transition-colors"><XCircle size={24} /></button>
                         </div>
                         <form onSubmit={handleCreateRoom} className="p-6 space-y-4">
