@@ -2,11 +2,10 @@ package com.vusal.azerbook.model.entity;
 
 import com.vusal.azerbook.enums.ReservationStatus;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,15 +26,18 @@ public class Reservation {
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     User user;
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     Room room;
 
     @ManyToOne
-    @JoinColumn(name = "hotel_id", nullable = false)
+    @JoinColumn(name = "hotel_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     Hotel hotel;
 
     @Column(name = "check-in", nullable = false)

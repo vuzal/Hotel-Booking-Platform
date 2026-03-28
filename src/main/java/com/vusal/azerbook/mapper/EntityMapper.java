@@ -20,11 +20,27 @@ public interface EntityMapper {
     )
     ReviewResponse toReviewResponse(Review review);
 
-    @Mapping(target = "hotelMainImageUrl", source = "hotel.mainImageUrl")
-    @Mapping(target = "hotelName", source = "hotel.name")
-    @Mapping(target = "roomName", source = "room.name")
-    @Mapping(target = "hotelId", source = "hotel.id")
-    @Mapping(target = "guestName", expression = "java(reservation.getUser().getFirstName() + \" \" + reservation.getUser().getLastName())")
+
+    @Mapping(
+            target = "hotelMainImageUrl",
+            expression = "java(reservation.getHotel() != null ? reservation.getHotel().getMainImageUrl() : null)"
+    )
+    @Mapping(
+            target = "hotelName",
+            expression = "java(reservation.getHotel() != null ? reservation.getHotel().getName() : \"Silinmiş Otel\")"
+    )
+    @Mapping(
+            target = "roomName",
+            expression = "java(reservation.getRoom() != null ? reservation.getRoom().getName() : \"Silinmiş Otaq\")"
+    )
+    @Mapping(
+            target = "hotelId",
+            expression = "java(reservation.getHotel() != null ? reservation.getHotel().getId() : null)"
+    )
+    @Mapping(
+            target = "guestName",
+            expression = "java(reservation.getUser() != null ? reservation.getUser().getFirstName() + \" \" + reservation.getUser().getLastName() : \"Silinmiş İstifadəçi\")"
+    )
     ReservationResponse toReservationResponse(Reservation reservation);
 
     PaymentResponse toPaymentResponse(Payment payment);
