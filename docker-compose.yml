@@ -14,6 +14,47 @@ services:
       - azerbook_db_volume:/var/lib/postgresql/data
       - ./setup_booking.sql:/docker-entrypoint-initdb.d/setup_booking.sql
     restart: unless-stopped
+    networks:
+      - azerbook-net
+
+
+#Backend Service
+  backend:
+    build: .
+    container_name: azerbook_backend
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/book
+      DB_USER: vusal
+      DB_PASS: azerbook55
+      JWT_ACCESS_SECRET: SAXTAVnVzYWxBemVyYm9va0xvY2FsU2VjcmV0S2V5Rm9ySnd0QXV0aGVudGljYXRpb24=
+      JWT_REFRESH_SECRET: VnVzYWxBemVyYm9va0xvY2FsU2VjcmV0S2V5Rm9ySnd0QXV0aGVudGljYXRpb24=
+    ports:
+      - "8080:8080"
+    networks:
+      - azerbook-net
+
+#Frontend Service
+  frontend:
+    build: ./frontend
+    container_name: azerbook_frontend
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    networks:
+      - azerbook-net
+
 
 volumes:
   azerbook_db_volume:
+
+
+networks:
+  azerbook-net:
+    driver: bridge
+
+
