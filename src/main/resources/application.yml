@@ -18,8 +18,8 @@ server:
 
 
 jwt:
-  access-secret: HJp3ANdvf8aG/r6dN6Tb/zh/bldF78bsylojKPYptlU=
-  refresh-secret: 6/CwOpck/s7epm39OwrXJHEPufqMQM4kDrrAXfjPdik=
+  access-secret: ${JWT_ACCESS_SECRET:SAXTAVnVzYWxBemVyYm9va0xvY2FsU2VjcmV0S2V5Rm9ySnd0QXV0aGVudGljYXRpb24=}
+  refresh-secret: ${JWT_REFRESH_SECRET:SAXTAVnVzYWxBemVyYm9va0xvY2FsU2VjcmV0S2V5Rm9ySnd0QXV0aGVudGljYXRpb24=}
   access-expiration: 900000
   refresh-expiration: 604800000
 
