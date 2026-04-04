@@ -44,7 +44,7 @@ public class UserController {
             @CurrentUser UserDetailsImpl currentUser, @Valid @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(
                 userService.updateProfile(
-                        currentUser.getId(), request.getFirstName(), request.getLastName(), request.getPhone())
+                        currentUser.getId(), request)
 
         );
     }

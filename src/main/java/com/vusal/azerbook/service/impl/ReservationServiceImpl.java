@@ -41,8 +41,8 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("USER NOT FOUND. userId: " + userId));
-        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new RuntimeException("ROOM NOT FOUND. roomId: " + request.getRoomId()));
-        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new RuntimeException("HOTEL NOT FOUND. hotelId: " + request.getHotelId()));
+        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new NotFoundException("ROOM NOT FOUND. roomId: " + request.getRoomId()));
+        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(() -> new NotFoundException("HOTEL NOT FOUND. hotelId: " + request.getHotelId()));
 
         if (!isRoomAvailable(request.getRoomId(), request.getCheckIn(), request.getCheckOut())) {
             throw new RoomNotAvailableException("ROOM IS NOT AVAILABLE FOR SELECTED DATE!");

@@ -1,5 +1,6 @@
 package com.vusal.azerbook.service;
 
+import com.vusal.azerbook.model.dto.UserUpdateRequest;
 import com.vusal.azerbook.model.response.UserResponse;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface UserService {
 
     UserResponse getByEmail(String email);
 
-    UserResponse updateProfile(Long userId, String firstName, String lastName, String phone);
+    UserResponse updateProfile(Long userId, UserUpdateRequest userUpdateRequest);
 
 
 }

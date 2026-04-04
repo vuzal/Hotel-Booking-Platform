@@ -1,6 +1,7 @@
 package com.vusal.azerbook.service.impl;
 
 import com.vusal.azerbook.exception.NotFoundException;
+import com.vusal.azerbook.model.dto.UserUpdateRequest;
 import com.vusal.azerbook.model.response.UserResponse;
 import com.vusal.azerbook.model.entity.User;
 import com.vusal.azerbook.mapper.EntityMapper;
@@ -37,12 +38,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateProfile(Long userId, String firstName, String lastName, String phone) {
+    public UserResponse updateProfile(Long userId, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("USER NOT FOUND. id: " + userId));
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPhone(phone);
+        user.setFirstName(userUpdateRequest.getFirstName());
+        user.setLastName(userUpdateRequest.getLastName());
+        user.setPhone(userUpdateRequest.getPhone());
 
         User updatedUser = userRepository.save(user);
         return mapper.toUserResponse(updatedUser);
