@@ -82,6 +82,9 @@ public class HotelServiceImpl implements HotelService {
         hotel.setCity(request.getCity());
         hotel.setAddress(request.getAddress());
         hotel.setMainImageUrl(request.getMainImageUrl());
+        hotel.setAmenities(request.getAmenities());
+        hotel.setRating(request.getRating());
+
 
         Hotel updated = hotelRepository.save(hotel);
         return mapper.toHotelResponse(updated);
