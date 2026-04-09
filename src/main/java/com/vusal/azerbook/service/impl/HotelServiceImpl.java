@@ -9,6 +9,9 @@ import com.vusal.azerbook.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import com.vusal.azerbook.model.response.HotelDetailResponse;
 import com.vusal.azerbook.model.response.HotelResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -32,10 +35,11 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public List<HotelResponse> getAll() {
-        return hotelRepository.findAll().stream()
-                .map(mapper::toHotelResponse)
-                .toList();
+    public Page<HotelResponse> getAll(int page, int size) {
+        Pageable pageable= PageRequest.of(page,size);
+        Page<Hotel> hotelPage= hotelRepository.findAll(pageable);
+        return hotelPage
+                .map(mapper::toHotelResponse);
     }
 
     @Override
@@ -45,14 +49,15 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public List<HotelResponse> getByCity(String city) {
-        List<Hotel> hotels = hotelRepository.findByCityContainingIgnoreCase(city);
+    public Page<HotelResponse> getByCity(String city, int page, int size) {
+        Pageable pageable= PageRequest.of(page,size);
+        Page<Hotel> hotels = hotelRepository.findByCityContainingIgnoreCase(city,pageable);
 
         if (hotels.isEmpty()) {
             throw new NotFoundException("HOTEL NOT FOUND. CITY: " + city);
         }
-        return hotels.stream()
-                .map(mapper::toHotelResponse).toList();
+        return hotels
+                .map(mapper::toHotelResponse);
     }
 
     public Map<String,Long>getCityHotelCounts(){
@@ -65,13 +70,14 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public List<HotelResponse> searchByName(String name) {
-        List<Hotel> hotels = hotelRepository.findByNameIgnoreCase(name);
+    public Page<HotelResponse> searchByName(String name, int page, int size) {
+        Pageable pageable= PageRequest.of(page,size);
+        Page<Hotel> hotels = hotelRepository.findByNameIgnoreCase(name,pageable);
 
         if (hotels.isEmpty()) {
             throw new NotFoundException("HOTEL NOT FOUND. NAME: " + name);
         }
-        return hotels.stream().map(mapper::toHotelResponse).toList();
+        return hotels.map(mapper::toHotelResponse);
     }
 
     @Override

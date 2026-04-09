@@ -6,6 +6,7 @@ import com.vusal.azerbook.model.response.HotelResponse;
 import com.vusal.azerbook.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,8 +31,9 @@ public class HotelController {
     }
 
     @GetMapping
-    public ResponseEntity<List<HotelResponse>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(hotelService.getAll());
+    public ResponseEntity<Page<HotelResponse>> getAll(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.status(HttpStatus.OK).body(hotelService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
@@ -40,18 +42,20 @@ public class HotelController {
     }
 
     @GetMapping("/city/{city}")
-    public ResponseEntity<List<HotelResponse>> getByCity(@PathVariable String city) {
-        return ResponseEntity.status(HttpStatus.OK).body(hotelService.getByCity(city));
+    public ResponseEntity<Page<HotelResponse>> getByCity(@PathVariable String city, @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.status(HttpStatus.OK).body(hotelService.getByCity(city, page, size));
     }
 
     @GetMapping("/city-counts")
-    public ResponseEntity<Map<String,Long>>getCityCounts(){
+    public ResponseEntity<Map<String, Long>> getCityCounts() {
         return ResponseEntity.ok(hotelService.getCityHotelCounts());
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<HotelResponse>> searchByName(@RequestParam String name) {
-        return ResponseEntity.ok(hotelService.searchByName(name));
+    public ResponseEntity<Page<HotelResponse>> searchByName(@RequestParam String name, @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(hotelService.searchByName(name, page, size));
     }
 
     @PutMapping("/{id}")

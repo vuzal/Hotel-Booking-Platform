@@ -55,8 +55,10 @@ export default function AdminPanel() {
             try {
                 // Rezervasiyalar
                 const resRes = await apiFetch('/api/reservations');
-                if (resRes.ok) setReservations(await resRes.json());
-                else if (resRes.status === 403) {
+                if (resRes.ok) {
+                    const data = await resRes.json();
+                    setReservations(data.content ? data.content : (Array.isArray(data) ? data : []));
+                } else if (resRes.status === 403) {
                     toast.error('Sizin bu səhifəyə giriş hüququnuz yoxdur!');
                     router.push('/');
                     return;
@@ -64,7 +66,10 @@ export default function AdminPanel() {
 
                 // Otellər
                 const hotRes = await apiFetch('/api/hotels');
-                if (hotRes.ok) setHotels(await hotRes.json());
+                if (hotRes.ok) {
+                    const data = await hotRes.json();
+                    setHotels(data.content ? data.content : (Array.isArray(data) ? data : []));
+                }
 
             } catch (error) {
                 console.error("Admin data xətası:", error);
@@ -81,7 +86,10 @@ export default function AdminPanel() {
             const fetchRooms = async () => {
                 try {
                     const rRes = await apiFetch('/api/rooms');
-                    if (rRes.ok) setRooms(await rRes.json());
+                    if (rRes.ok) {
+                        const data = await rRes.json();
+                        setRooms(data.content ? data.content : (Array.isArray(data) ? data : []));
+                    }
                 } catch (error) {
                     toast.error("Otaqlar çəkilərkən xəta baş verdi");
                 }
@@ -95,14 +103,11 @@ export default function AdminPanel() {
         if (activeTab === 'users') {
             const fetchUsers = async () => {
                 try {
-                    // Backend-dən (Spring Boot) real istifadəçiləri çəkirik
                     const uRes = await apiFetch('/api/users');
-
                     if (uRes.ok) {
                         const data = await uRes.json();
-                        setUsers(data);
+                        setUsers(data.content ? data.content : (Array.isArray(data) ? data : []));
                     } else {
-                        // Əgər API xəta versə (məsələn 403 və ya 404)
                         toast.error("İstifadəçiləri çəkmək mümkün olmadı.");
                         setUsers([]);
                     }

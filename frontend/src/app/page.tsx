@@ -68,7 +68,9 @@ export default function HomePage() {
         const hotelsRes = await fetch(`${API_URL}/api/hotels`);
         if (hotelsRes.ok) {
           const data = await hotelsRes.json();
-          setFeaturedHotels(data.slice(0, 6).map((h: any) => ({
+          const hotelsArray = data.content ? data.content : data;
+
+          setFeaturedHotels(hotelsArray.slice(0, 6).map((h: any) => ({
             ...h,
             id: h.id.toString(),
             image: h.mainImageUrl || 'https://images.unsplash.com/photo-1566073771259-6a8506099945',
