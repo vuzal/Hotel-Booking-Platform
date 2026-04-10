@@ -81,8 +81,13 @@ function SearchContent() {
         setAllHotels(hotelsArray);
         setFilteredHotels(hotelsArray);
 
-        // Backenddən gələn səhifə sayını state-ə yazırıq (Əgər yoxdursa default 1)
-        if (data.totalPages !== undefined) {
+
+        // Backenddən gələn səhifə sayını state-ə yazırıq
+        if (data.page && data.page.totalPages !== undefined) {
+          // YENİ VERSİYA (VIA_DTO anatasiyası olanda bu işləyəcək)
+          setTotalPages(data.page.totalPages);
+        } else if (data.totalPages !== undefined) {
+          // KÖHNƏ VERSİYA (Anatasiya silinəndə bu işləyəcək)
           setTotalPages(data.totalPages);
         }
 
@@ -282,8 +287,8 @@ function SearchContent() {
                           variant={currentPage === i ? 'default' : 'outline'}
                           onClick={() => handlePageChange(i)}
                           className={`w-12 h-12 rounded-2xl font-black text-sm transition-all ${currentPage === i
-                              ? 'bg-[#1E3A5F] text-white shadow-lg shadow-blue-900/20'
-                              : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                            ? 'bg-[#1E3A5F] text-white shadow-lg shadow-blue-900/20'
+                            : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                             }`}
                         >
                           {i + 1}
